@@ -5,7 +5,7 @@ export enum TRACK_CHANGES_OPERATION {
     TEXT_ADDED = 0,
     TEXT_DELETED = 1,
     RESTYLED = 2,
-}
+};
 
 export type TrackChangesInfo = {
     operation: TRACK_CHANGES_OPERATION;

@@ -1,13 +1,19 @@
 import { Range, Transforms, Node, Editor, Text, Element, NodeEntry, BasePoint } from "slate";
 
 import { editorHasMode } from "utils";
-import { TrackChangesEditor, EditorMode, TRACK_CHANGES_OPERATION, TrackChangesText } from "types";
+import { TrackChangesEditor, EditorMode, TRACK_CHANGES_OPERATION, TrackChangesText, TrackChangesInfo } from "types";
 
 export function toggleEditorMode(editor: TrackChangesEditor, mode: EditorMode): void {
     const current = editor.modes[mode];
     editor.modes[mode] = !current;
     console.log(`Changed mode ${mode} from ${current} to ${editor.modes[mode]}`);
     editor.onChange();
+}
+
+function _getTrackChangesInfo(editor: TrackChangesEditor): TrackChangesInfo {
+    const marks = Editor.marks(editor);
+    //@ts-ignore
+    return marks.trackChanges || null;
 }
 
 const tcDeleteFragment = (editor: TrackChangesEditor, selection: Range) => {
@@ -85,6 +91,56 @@ export function withTrackChanges<T extends Editor>(e: T): TrackChangesEditor {
             { at: Range.end(editor.selection) }
         );
     }
+
+    editor.deleteBackward = (unit) => {
+        if (!editorHasMode(editor, "TrackChanges") || !editor.selection) {
+            return deleteBackward(unit);
+        } else {
+            if (Range.isCollapsed(editor.selection)) {
+                const [node, path] = Editor.parent(editor, editor.selection);
+
+                const back1 = Editor.before(editor, editor.selection.anchor, {
+                    distance: 1,
+                    unit: "character",
+                });
+
+                if (!back1) {
+                    // probably only when we're at the beginning of the document
+                    return;
+                }
+
+                const back1Ref = Editor.pointRef(editor, back1);
+                Transforms.select(e, {
+                    anchor: editor.selection.anchor,
+                    focus: back1,
+                });
+
+                const currentTrackChangesInfo = _getTrackChangesInfo(editor);
+
+                if (
+                    currentTrackChangesInfo.operation === TRACK_CHANGES_OPERATION.TEXT_ADDED
+                ) {
+                    // actually delete it
+                    Transforms.delete(editor, {
+                        at: editor.selection.anchor,
+                        unit: "character",
+                        reverse: true,
+                    });
+                } else {
+                    editor.addMark("trackChanges", {
+                        operation: TRACK_CHANGES_OPERATION.TEXT_DELETED,
+                    });
+                    const newSelection = back1Ref.unref();
+                    if (newSelection) {
+                        // should probably always be true, not sure when newSelection would be null
+                        Transforms.select(e, newSelection);
+                    }
+                }
+            } else {
+                tcDeleteFragment(editor, editor.selection);
+            }
+        }
+    };
 
     return editor;
 }

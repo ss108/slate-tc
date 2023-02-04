@@ -3,7 +3,8 @@
     "homepage": "https://github.com/ss108/slate-tc",
     "license": "MIT",
     "scripts": {
-        "lint": "eslint src --ext .ts && npx prettier 'src/**/*.ts' --write"
+        "lint": "eslint src --ext .ts && npx prettier 'src/**/*.ts' --write",
+        "clean": "rm -rf dist"
     },
     "dependencies": {
         "slate": "0.88.1",

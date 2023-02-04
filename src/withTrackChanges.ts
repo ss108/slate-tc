@@ -1,7 +1,7 @@
 import { Range, Transforms, Node, Editor, Text, Element, NodeEntry, BasePoint } from "slate";
 
-import { editorHasMode } from "utils";
-import { TrackChangesEditor, EditorMode, TRACK_CHANGES_OPERATION, TrackChangesText, TrackChangesInfo } from "types";
+import { editorHasMode } from "./utils";
+import { TrackChangesEditor, EditorMode, TRACK_CHANGES_OPERATION, TrackChangesText, TrackChangesInfo } from "./types";
 
 export function toggleEditorMode(editor: TrackChangesEditor, mode: EditorMode): void {
     const current = editor.modes[mode];
@@ -139,6 +139,16 @@ export function withTrackChanges<T extends Editor>(e: T): TrackChangesEditor {
             } else {
                 tcDeleteFragment(editor, editor.selection);
             }
+        }
+    };
+
+
+    //TODO
+    editor.deleteForward = (unit) => {
+        if (editorHasMode(editor, "TrackChanges")) {
+            return;
+        } else {
+            deleteForward(unit);
         }
     };
 

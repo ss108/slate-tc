@@ -1,9 +1,8 @@
-import { ReactDOM } from "react";
+import ReactDom from 'react-dom';
 
-import TrackChangesExample from "./index.jsx";
+import TrackChangesExample from "./TrackChangesExample";
 
-ReactDOM.render(
-    TrackChangesExample,
-    document.getElementById("editor")
-);
-
+ReactDom.render(
+    <TrackChangesExample />,
+    document.getElementById("root")
+)

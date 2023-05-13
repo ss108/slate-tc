@@ -12,7 +12,7 @@ import {
 } from "slate";
 import {HistoryEditor, withHistory} from "slate-history";
 
-import {withTrackChanges} from "../src/withTrackChanges";
+import {withTrackChanges, toggleEditorMode} from "../src/withTrackChanges";
 
 // type CustomText = {text: string};
 // type CustomElement = {type: "paragraph"; children: CustomText[]};
@@ -24,6 +24,10 @@ import {withTrackChanges} from "../src/withTrackChanges";
 //     Text: CustomText;
 //   }
 // }
+
+function getCurrentStyling(editor) {
+  return Editor.marks(editor) || {};
+}
 
 const Leaf = (props) => {
   return (
@@ -39,6 +43,9 @@ const Leaf = (props) => {
 const initialValue = [{type: "paragraph", children: [{text: ""}]}];
 
 function handleKeyDown(e, editor) {
+  console.log(e.ctrlKey);
+  console.log(e.key);
+
   if (!e.ctrlKey) {
     return;
   }
@@ -59,9 +66,12 @@ function handleKeyDown(e, editor) {
     }
 
     case "i": {
+      break;
     }
 
-    case "t": {
+    case "1": {
+      toggleEditorMode(editor, "TrackChanges");
+      break;
     }
   }
 }

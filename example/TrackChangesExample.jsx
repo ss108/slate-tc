@@ -14,38 +14,25 @@ import {HistoryEditor, withHistory} from "slate-history";
 
 import {withTrackChanges, toggleEditorMode} from "../src/withTrackChanges";
 
-// type CustomText = {text: string};
-// type CustomElement = {type: "paragraph"; children: CustomText[]};
-
-// declare module "slate" {
-//   interface CustomTypes {
-//     Editor: TrackChangesEditor & HistoryEditor;
-//     Element: CustomElement;
-//     Text: CustomText;
-//   }
-// }
-
-function getCurrentStyling(editor) {
+function getMarks(editor) {
   return Editor.marks(editor) || {};
 }
 
-const Leaf = (props) => {
-  return (
-    <span
-      {...props.attributes}
-      style={{fontWeight: props.leaf.bold ? "bold" : "normal"}}
-    >
-      {props.children}
-    </span>
-  );
-};
+function toggleMark(editor, m) {
+  let editorMarks = getMarks(editor);
+
+  if (!(m in editorMarks)) {
+    editor.addMark(m, true);
+  } else {
+    editor.addMark(m, !editorMarks[m]);
+  }
+
+  console.log(`Mark ${m} is now ${getMarks(editor)[m]}`);
+}
 
 const initialValue = [{type: "paragraph", children: [{text: ""}]}];
 
 function handleKeyDown(e, editor) {
-  console.log(e.ctrlKey);
-  console.log(e.key);
-
   if (!e.ctrlKey) {
     return;
   }
@@ -54,14 +41,7 @@ function handleKeyDown(e, editor) {
 
   switch (e.key) {
     case "b": {
-      Transforms.setNodes(
-        editor,
-        {bold: true},
-        {
-          match: (n) => Text.isText(n),
-          split: true,
-        }
-      );
+      toggleMark(editor, "bold");
       break;
     }
 
@@ -82,10 +62,20 @@ const TrackChangesExample = () => {
     []
   );
 
-  const renderElement = useCallback(
-    (props) => <p {...props.attributes}>{props.children}</p>,
-    []
-  );
+  const renderElement = useCallback((props) => {
+    return <p>{props.children}</p>;
+  }, []);
+
+  const Leaf = (props) => {
+    return (
+      <span
+        {...props.attributes}
+        style={{fontWeight: props.leaf.bold ? "bold" : "normal"}}
+      >
+        {props.children}
+      </span>
+    );
+  };
 
   const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
 

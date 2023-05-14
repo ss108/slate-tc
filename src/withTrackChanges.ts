@@ -54,8 +54,9 @@ export function withTrackChanges<T extends Editor>(e: T): TrackChangesEditor {
             editor.addMark("trackChanges", {
                 operation: TRACK_CHANGES_OPERATION.TEXT_ADDED
             });
-            editor.insertText(text);
         }
+
+        insertText(text);
     }
 
     // editor.insertFragment = (fragment: Node[]) => {

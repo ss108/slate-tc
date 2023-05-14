@@ -1,4 +1,4 @@
-import React, {LegacyRef, useState} from "react";
+import React, {LegacyRef, ReactComponentElement, useState} from "react";
 import {Editor, Transforms, Node, Path, Element} from "slate";
 import {ReactEditor, useSlateStatic} from "slate-react";
 
@@ -12,7 +12,7 @@ interface ChangedTextProps {
   stylingFn?: StylingFunction;
 }
 
-const DefaultTrackChangesText = React.forwardRef(
+export const DefaultTrackChangesText = React.forwardRef(
   (
     {children, info, stylingFn}: ChangedTextProps,
     ref: LegacyRef<HTMLElement> | undefined
@@ -40,3 +40,21 @@ const DefaultTrackChangesText = React.forwardRef(
 );
 
 DefaultTrackChangesText.displayName = "ChangedText";
+
+// interface TrackChangesWrapperProps {
+//   info: TrackChangesInfo;
+//   children: React.ReactNode;
+//   textElement?: React.JSX.Element;
+// }
+
+// export const DefaultTrackChangesWrapper = ({
+//   children,
+//   info,
+//   textElement,
+// }: TrackChangesWrapperProps) => {
+//   if (!textElement) {
+//     textElement = DefaultTrackChangesText;
+//   }
+
+//   return;
+// };

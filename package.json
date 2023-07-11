@@ -4,7 +4,8 @@
     "license": "MIT",
     "scripts": {
         "lint": "eslint src --ext .ts && npx prettier 'src/**/*.ts' --write",
-        "clean": "rm -rf dist"
+        "clean": "rm -rf dist",
+        "example": "npx parcel example/index.html"
     },
     "dependencies": {
         "slate": "0.88.1",

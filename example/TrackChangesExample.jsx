@@ -30,7 +30,7 @@ function toggleMark(editor, m) {
   console.log(`Mark ${m} is now ${getMarks(editor)[m]}`);
 }
 
-const initialValue = [{type: "paragraph", children: [{text: ""}]}];
+const initialValue = [{type: "paragraph", children: [{text: "eyhfhd"}]}];
 
 function handleKeyDown(e, editor) {
   if (!e.ctrlKey) {
